@@ -2,30 +2,46 @@ import torch
 import spacy
 
 
-def get_data(batch_size=128):
+class GetDataset:
     """
-    Download datasets, and extract vocabulary, returns train/test sets.
-    :param batch_size: integer.
-        Batch size.
-    :return: train, test and valid sets along with pytext's Fields for both languages.
+    Download datasets, and extract vocabulary.
     """
 
-    # load the languages
-    spacy_en = spacy.load('en_core_web_sm')
-    spacy_ar = spacy.load('fr_core_news_sm')
+    def __init__(self, batch_size=128):
+        """
+        :param batch_size: integer.
+            Batch size.
+            # :return: train, test and valid sets along with pytext's Fields for both languages.
+        """
 
-    # define the tokenizer for both languages
+        # load the languages
+        self.spacy_en = spacy.load('en_core_web_sm')
+        self.spacy_fr = spacy.load('fr_core_news_sm')
 
-
-    return spacy_en, spacy_ar
+    def _tokenizer(self, sentence, lang='en'):
+        """
+        Tokenize the given sentence using the
+        :param sentence: string
+            A sentence
+        :param lang: spacy language files, aka: spacy_en or spacy_fr
+        :return: array_like of strings
+            tokens of the given sentence
+        """
+        if lang == 'en':
+            sp_lang = self.spacy_en
+            return [token.text for token in sp_lang.tokenizer(sentence)]
+        elif lang == 'fr':
+            sp_lang = self.spacy_en
+            return [token.text for token in sp_lang.tokenizer(sentence)]
 
 
 if __name__ == "__main__":
-    nlp_en, nlp_fr = get_data()
+    # GetDataset class instantiation
+    get_dataset = GetDataset()
     sentence_en = "This world makes you happy if you deserve."
     sentence_fr = "Deux personnes se promenadent dans la rue."
-    doc_en = nlp_en(sentence_en)
-    doc_fr = nlp_fr(sentence_fr)
+    doc_en = get_dataset.spacy_en(sentence_en)
+    doc_fr = get_dataset.spacy_fr(sentence_fr)
 
     # extract nouns
     en_nouns = []
