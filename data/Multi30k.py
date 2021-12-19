@@ -1,5 +1,6 @@
 from torchtext.datasets import Multi30k
 from torchtext.data.utils import get_tokenizer
+from torchtext.vocab import build_vocab_from_iterator
 from config import *
 
 
@@ -31,20 +32,34 @@ class CustomMulti30k:
         else:
             return get_tokenizer('spacy', language=LANG_SHORTCUTS[lang])
 
-    def build_vocab(self, lang):
+    def _get_tokens(self, data_iterator=None, lang='en'):
+        """
+        Get token for an iterator containing tuple of string
+        :param lang: str
+            'en' or 'de' for source and target languages.
+        :return: List
+            List of tokens.
+        """
+        for data_sample in data_iterator:
+            print(len(self.train))
+            yield self._get_tokenizer(lang)(data_sample[LANGUAGE_INDEX[lang]])
+
+    def build_vocab(self, data_iterator, lang):
         """
         Build the vocabulary of the given language.
+        :param data_iterator: Iterator
+            Data iterator.
         :param lang: str
             Language shortcut.
         :return: None
         """
+
         # for English lang
-        if lang == 'en':
-            pass
-        elif lang == 'de':
-            pass
+        if lang in LANG_SHORTCUTS:
+            return build_vocab_from_iterator(self._get_tokens(data_iterator, LANGUAGE_INDEX[lang]), min_freq=1,
+                                             specials=SPECIAL_SYMBOLS, special_first=True)
         else:
-            raise ValueError('Not supported language')
+            raise ValueError('Not a supported language')
 
     def _extract_sets(self):
         """
@@ -63,4 +78,5 @@ if __name__ == "__main__":
     print(f'+ Valid test: {valid.__len__()} sentences')
     print(f'+ Test test: {test.__len__()} sentences')
     print('+++++++++++++++++++++++++++++++++++++++++++')
-    custom_multi30k.get_tokenizer('de')
+    a = custom_multi30k._get_tokens('de')
+    print(a)
