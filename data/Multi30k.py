@@ -35,22 +35,10 @@ if __name__ == "__main__":
     print(f'+ Valid test: {valid.__len__()} sentences')
     print(f'+ Test test: {test.__len__()} sentences')
     print('+++++++++++++++++++++++++++++++++++++++++++')
-    vocab = custom_multi30k.build_vocab(train)
-    # print('vocab_size', vocab.__len__())
-    # print('itos --> ', vocab.get_itos())
-    # print('itos --> ', vocab.get_stoi())
-    print('+++++++++++++++++++++++++++++++++')
-    train_dataloader = DataLoader(train, batch_size=10)
+    train_dataloader = DataLoader(train, batch_size=10, collate_fn=collate_fn)
     print(type(train_dataloader))
     print('train test')
-    for i, batch in enumerate(train_dataloader):
+    for i, (src, target) in enumerate(train_dataloader):
         print('..', {i})
-        print(batch)
-
-
-    # train_iter, _, _ = Multi30k(root="../.data", split=('train', 'valid', 'test'), language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
-    # train_dataloader = DataLoader(train, batch_size=2)
-    #
-    # for i, batch in enumerate(train_dataloader):
-    #     print('..', {i})
-    #     print(batch)
+        print('src: ', src)
+        print('target: ', target)
