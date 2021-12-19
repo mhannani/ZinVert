@@ -1,6 +1,7 @@
 from torchtext.datasets import Multi30k
 from torchtext.data.utils import get_tokenizer
 from torchtext.vocab import build_vocab_from_iterator
+from torch.utils.data import DataLoader
 from config import *
 
 
@@ -41,10 +42,9 @@ class CustomMulti30k:
             List of tokens.
         """
         for data_sample in data_iterator:
-            print(len(self.train))
             yield self._get_tokenizer(lang)(data_sample[LANGUAGE_INDEX[lang]])
 
-    def build_vocab(self, data_iterator, lang):
+    def build_vocab(self, data_iterator, lang='en'):
         """
         Build the vocabulary of the given language.
         :param data_iterator: Iterator
@@ -56,8 +56,11 @@ class CustomMulti30k:
 
         # for English lang
         if lang in LANG_SHORTCUTS:
-            return build_vocab_from_iterator(self._get_tokens(data_iterator, LANGUAGE_INDEX[lang]), min_freq=1,
-                                             specials=SPECIAL_SYMBOLS, special_first=True)
+            vocabulary = build_vocab_from_iterator(self._get_tokens(data_iterator, lang), min_freq=1,
+                                      specials=SPECIAL_SYMBOLS, special_first=True)
+            vocabulary.set_default_index(UNK_IDX)
+
+            return vocabulary
         else:
             raise ValueError('Not a supported language')
 
@@ -78,5 +81,22 @@ if __name__ == "__main__":
     print(f'+ Valid test: {valid.__len__()} sentences')
     print(f'+ Test test: {test.__len__()} sentences')
     print('+++++++++++++++++++++++++++++++++++++++++++')
-    a = custom_multi30k._get_tokens('de')
-    print(a)
+    vocab = custom_multi30k.build_vocab(train)
+    # print('vocab_size', vocab.__len__())
+    # print('itos --> ', vocab.get_itos())
+    # print('itos --> ', vocab.get_stoi())
+    print('+++++++++++++++++++++++++++++++++')
+    train_dataloader = DataLoader(train, batch_size=10)
+    print(type(train_dataloader))
+    print('train test')
+    for i, batch in enumerate(train_dataloader):
+        print('..', {i})
+        print(batch)
+
+
+    # train_iter, _, _ = Multi30k(root="../.data", split=('train', 'valid', 'test'), language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
+    # train_dataloader = DataLoader(train, batch_size=2)
+    #
+    # for i, batch in enumerate(train_dataloader):
+    #     print('..', {i})
+    #     print(batch)
