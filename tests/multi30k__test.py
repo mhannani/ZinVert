@@ -5,7 +5,7 @@ from src.data.Multi30k import CustomMulti30k
 
 
 if __name__ == "__main__":
-    custom_multi30k = CustomMulti30k()
+    custom_multi30k = CustomMulti30k(root='../data/.data')
     train, valid, test = custom_multi30k.extract_sets()
     print('DATASET SUMMARY')
     print('+++++++++++++++')

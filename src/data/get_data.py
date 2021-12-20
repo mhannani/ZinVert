@@ -14,7 +14,7 @@ def get_data(batch_size, split='train'):
         train, valid sets and both vocabulary of two languages.
     """
 
-    train, valid, test = CustomMulti30k().extract_sets()
+    train, valid, test = CustomMulti30k(root='../data/.data').extract_sets()
     sets = {'train': train, 'valid': valid, 'test': test}
     if split in ('train', 'valid', 'test'):
         iterator = DataLoader(sets[split], batch_size=batch_size, collate_fn=CollateFn())
