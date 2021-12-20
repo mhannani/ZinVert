@@ -1,3 +1,4 @@
+import torch
 from torchtext.data.utils import get_tokenizer
 from torchtext.datasets import Multi30k
 from torchtext.vocab import build_vocab_from_iterator
@@ -10,7 +11,7 @@ class Vocabulary:
     Build vocabulary for a language.
     """
 
-    def __init__(self, freq_threshold):
+    def __init__(self, freq_threshold=1):
         """
         The class constructor.
         :param dataset: dataset
@@ -63,6 +64,61 @@ class Vocabulary:
         return vocabulary
 
     @staticmethod
+    def tensor_transform(tokens_idx):
+        """
+        Builds the representation of numericalized sentence as Tensor.
+
+        Input : A List, [12, 1, 6, 12, 200, 100] this a transformed sentence.
+        (apply itos function to get the original text-based sentence).
+
+        Output : The same input with EOS and SOS tensor concatenated
+        respectively to the end and the beginning of the input tensor.
+
+        :param tokens_idx: List
+            A transformed sentence with indices of each token in it.
+        :return: Tensor
+            Sentence with SOS and EOS tokens.
+        """
+
+        return torch.cat((
+            torch.tensor([SOS_IDX]),
+            torch.tensor(tokens_idx),
+            torch.tensor([EOS_IDX])
+        ))
+
+    @staticmethod
+    def pipeline(*transforms):
+        """
+        Make a pipeline of many transformation to the given input data.
+
+        :param transforms: List
+            List of transformation as arguments to the function
+        :return: Function with transformation.
+        """
+        def shot(sentence):
+            """
+            Applies transformation
+            :param sentence:str
+            :return: Tensor
+                Input as Tensor
+            """
+            for transform in transforms:
+                sentence = transform(sentence)
+            return sentence
+
+        return shot
+
+    def preprocess(self, sentence):
+        """
+        Tokenize, numericalize and turn into tensor the given sentence.
+        :param sentence: str
+            The source language sentence.
+        :return: Tensor
+            The transformed sentence. Ready to be given to the network ;)
+        """
+        pass
+
+    @staticmethod
     def _save_file(filename, data):
         # save the vocabulary as json
         with open(filename, 'w') as f:
@@ -105,3 +161,8 @@ if __name__ == "__main__":
     print(en_voc.get_stoi())
     print('==============================================')
     print(de_voc.get_stoi())
+
+    print('++++++++++++++++++++++++++++++++++++++++++++++')
+    print('The tensor_transform function testing')
+    token_idx = [10, 20, 5, 100, 120, 302]
+    print(vocab.tensor_transform(token_idx))  # working
