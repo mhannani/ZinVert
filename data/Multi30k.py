@@ -16,14 +16,14 @@ class CustomMulti30k:
         :param language_pair:
         """
 
-        self.train, self.valid, self.test = Multi30k(root="../.data", split=split, language_pair=language_pair)
+        self.train = Multi30k(root="../.data", split='train', language_pair=language_pair)
 
     def extract_sets(self):
         """
         Extracts train, valid and test sets from Multi30K dataset.
         :return: List
         """
-        return self.train, self.valid, self.test
+        return self.train
 
 
 if __name__ == "__main__":
@@ -35,7 +35,7 @@ if __name__ == "__main__":
     print(f'+ Valid test: {valid.__len__()} sentences')
     print(f'+ Test test: {test.__len__()} sentences')
     print('+++++++++++++++++++++++++++++++++++++++++++')
-    train_dataloader = DataLoader(train, batch_size=10, collate_fn=collate_fn)
+    train_dataloader = DataLoader(train, batch_size=10)
     print(type(train_dataloader))
     print('train test')
     for i, (src, target) in enumerate(train_dataloader):
