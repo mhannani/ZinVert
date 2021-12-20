@@ -17,6 +17,7 @@ if __name__ == "__main__":
     print(vocab.tensor_transform(token_idx))  # working.
 
     print('++++++++++++++++++++++++++++++++++++++++++++++')
+
     print('preprocess sentences function test')
     phrase = "Two young, White males are outside near many bushes."
     print(vocab.preprocess()['en'](phrase))  # tensor([   2, 1167, 8948,  595,  132,    6,    3])
