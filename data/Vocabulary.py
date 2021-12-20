@@ -76,8 +76,9 @@ class Vocabulary:
 
         :param tokens_idx: List
             A transformed sentence with indices of each token in it.
+
         :return: Tensor
-            Sentence with SOS and EOS tokens.
+            Sentence with SOS and EOS tokens added.
         """
 
         return torch.cat((
@@ -97,7 +98,7 @@ class Vocabulary:
         """
         def shot(sentence):
             """
-            Applies transformation
+            Applies transformations as input.
             :param sentence:str
             :return: Tensor
                 Input as Tensor
@@ -108,15 +109,24 @@ class Vocabulary:
 
         return shot
 
-    def preprocess(self, sentence):
+    def preprocess(self):
         """
-        Tokenize, numericalize and turn into tensor the given sentence.
-        :param sentence: str
-            The source language sentence.
-        :return: Tensor
-            The transformed sentence. Ready to be given to the network ;)
+        Tokenize, numericalize and turn into tensor a sentence.
+
+        :return: Dict
+            The transformation to be applied to a text-based sentence.
         """
-        pass
+
+        sentence_transform = {}
+
+        for lang in [SRC_LANGUAGE, TGT_LANGUAGE]:
+            sentence_transform[lang] = self.pipeline(
+                self.get_tokenizer()[lang],
+                self.build_vocab()[lang],
+                self.tensor_transform
+            )
+
+        return sentence_transform
 
     @staticmethod
     def _save_file(filename, data):
@@ -166,3 +176,10 @@ if __name__ == "__main__":
     print('The tensor_transform function testing')
     token_idx = [10, 20, 5, 100, 120, 302]
     print(vocab.tensor_transform(token_idx))  # working
+
+    print('++++++++++++++++++++++++++++++++++++++++++++++')
+    print('preprocess sentences function test')
+    phrase = "I hope this working."
+    print(vocab.preprocess()['en'](phrase))  # tensor([   2, 1167, 8948,  595,  132,    6,    3])
+    print(en_voc.lookup_tokens([2, 1167, 8948,  595,  132,    6,    3]))
+
