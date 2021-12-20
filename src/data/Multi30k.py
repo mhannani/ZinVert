@@ -18,9 +18,9 @@ class CustomMulti30k:
         """
         self.split = split
 
-        self.train = Multi30k(root="../.data", split='train', language_pair=language_pair)
-        self.valid = Multi30k(root="../.data", split='valid', language_pair=language_pair)
-        self.test = Multi30k(root="../.data", split='test', language_pair=language_pair)
+        self.train = Multi30k(root="../../.data", split='train', language_pair=language_pair)
+        self.valid = Multi30k(root="../../.data", split='valid', language_pair=language_pair)
+        self.test = Multi30k(root="../../.data", split='test', language_pair=language_pair)
 
     def extract_sets(self):
         """

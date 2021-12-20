@@ -8,7 +8,7 @@ from config import *
 
 class Vocabulary:
     """
-    Build vocabulary for a language.
+    Build processed for a language.
     """
 
     def __init__(self, freq_threshold=1):
@@ -16,7 +16,7 @@ class Vocabulary:
         The class constructor.
         :param dataset: dataset
         :param freq_threshold: int
-            The frequency threshold for the vocabulary.
+            The frequency threshold for the processed.
         """
 
         self.freq_threshold = freq_threshold
@@ -50,7 +50,7 @@ class Vocabulary:
 
     def build_vocab(self):
         """
-        Build the vocabulary of the given language.
+        Build the processed of the given language.
         :return: List of Vocabs
         """
         vocabulary = {}
@@ -141,13 +141,13 @@ class Vocabulary:
 
     @staticmethod
     def _save_file(filename, data):
-        # save the vocabulary as json
+        # save the processed as json
         with open(filename, 'w') as f:
             json.dump(data, f)
 
     def save_vocabulary(self, lang=('en', 'de')):
         """
-        Save vocabulary to disk
+        Save processed to disk
         :return:
         """
 
@@ -159,16 +159,16 @@ class Vocabulary:
             stoi = self.vocabulary[language].get_stoi()
 
             # save itos
-            self._save_file(f'vocabulary/index_to_name_{language}', itos)
+            self._save_file(f'../data/processed/index_to_name_{language}', itos)
 
             # save stoi
-            self._save_file(f'vocabulary/name_to_index_{language}', stoi)
+            self._save_file(f'../data/processed/name_to_index_{language}', stoi)
 
     def __call__(self):
         """
         Call the function when instantiation.
         :return: Set
-            Set of the vocabulary of the two languages.
+            Set of the processed of the two languages.
         """
 
         self.save_vocabulary()
