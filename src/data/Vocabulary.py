@@ -55,7 +55,7 @@ class Vocabulary:
         """
         vocabulary = {}
         for lang in [SRC_LANGUAGE, TGT_LANGUAGE]:
-            data_iterator = Multi30k(root="../.data", split='train', language_pair=('en', 'de'))
+            data_iterator = Multi30k(split='train', language_pair=('en', 'de'))
             vocabulary[lang] = build_vocab_from_iterator(self._get_tokens(data_iterator, lang),
                                                          min_freq=self.freq_threshold, specials=SPECIAL_SYMBOLS,
                                                          special_first=True)

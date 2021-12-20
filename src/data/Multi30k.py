@@ -9,18 +9,17 @@ class CustomMulti30k:
     Custom class for Multi32K dataset.
     """
 
-    def __init__(self, split, language_pair=(SRC_LANGUAGE, TGT_LANGUAGE)):
+    def __init__(self, language_pair=(SRC_LANGUAGE, TGT_LANGUAGE)):
         """
         The class constructor.
         :param split: string
             'train', 'test', or 'valid' set to be returned.
         :param language_pair:
         """
-        self.split = split
 
-        self.train = Multi30k(root="../../.data", split='train', language_pair=language_pair)
-        self.valid = Multi30k(root="../../.data", split='valid', language_pair=language_pair)
-        self.test = Multi30k(root="../../.data", split='test', language_pair=language_pair)
+        self.train = Multi30k(split='train', language_pair=language_pair)
+        self.valid = Multi30k(split='valid', language_pair=language_pair)
+        self.test = Multi30k(split='test', language_pair=language_pair)
 
     def extract_sets(self):
         """
@@ -32,7 +31,7 @@ class CustomMulti30k:
 
 
 if __name__ == "__main__":
-    custom_multi30k = CustomMulti30k(split=('train', 'valid', 'test'))
+    custom_multi30k = CustomMulti30k()
     train, valid, test = custom_multi30k.extract_sets()
     print('DATASET SUMMARY')
     print('+++++++++++++++')
