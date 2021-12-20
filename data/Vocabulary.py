@@ -103,11 +103,22 @@ class Vocabulary:
             :return: Tensor
                 Input as Tensor
             """
+            print(sentence)
             for transform in transforms:
                 sentence = transform(sentence)
             return sentence
 
         return shot
+
+    def postprocess(self, tensor, lang):
+        """
+        Postprocess a Tensor and get the corresponding text-based sentence from it.
+        :return: str
+            A sentence.
+        """
+        sentence = self.vocabulary[lang].lookup_tokens(tensor.tolist())
+        return sentence
+
 
     def preprocess(self):
         """
@@ -175,11 +186,10 @@ if __name__ == "__main__":
     print('++++++++++++++++++++++++++++++++++++++++++++++')
     print('The tensor_transform function testing')
     token_idx = [10, 20, 5, 100, 120, 302]
-    print(vocab.tensor_transform(token_idx))  # working
+    print(vocab.tensor_transform(token_idx))  # working.
 
     print('++++++++++++++++++++++++++++++++++++++++++++++')
     print('preprocess sentences function test')
-    phrase = "I hope this working."
+    phrase = "Two young, White males are outside near many bushes."
     print(vocab.preprocess()['en'](phrase))  # tensor([   2, 1167, 8948,  595,  132,    6,    3])
-    print(en_voc.lookup_tokens([2, 1167, 8948,  595,  132,    6,    3]))
-
+    print(vocab.postprocess(torch.tensor([2,20,26,16,1170,809,18,58,85,337,1340,6,3]), 'en'))

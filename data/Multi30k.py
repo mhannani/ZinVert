@@ -40,7 +40,7 @@ if __name__ == "__main__":
     print(f'+ Valid test: {valid.__len__()} sentences')
     print(f'+ Test test: {test.__len__()} sentences')
     print('+++++++++++++++++++++++++++++++++++++++++++')
-    train_dataloader = DataLoader(train, batch_size=10, collate_fn=CollateFn())
+    train_dataloader = DataLoader(train, batch_size=1, collate_fn=CollateFn())
     print('train test')
     for i, (src, target) in enumerate(train_dataloader):
         print('..', {i})
