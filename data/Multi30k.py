@@ -15,15 +15,19 @@ class CustomMulti30k:
             'train', 'test', or 'valid' set to be returned.
         :param language_pair:
         """
+        self.split = split
 
         self.train = Multi30k(root="../.data", split='train', language_pair=language_pair)
+        self.valid = Multi30k(root="../.data", split='valid', language_pair=language_pair)
+        self.test = Multi30k(root="../.data", split='test', language_pair=language_pair)
 
     def extract_sets(self):
         """
         Extracts train, valid and test sets from Multi30K dataset.
         :return: List
         """
-        return self.train
+
+        return self.train, self.valid, self.test
 
 
 if __name__ == "__main__":
@@ -35,8 +39,7 @@ if __name__ == "__main__":
     print(f'+ Valid test: {valid.__len__()} sentences')
     print(f'+ Test test: {test.__len__()} sentences')
     print('+++++++++++++++++++++++++++++++++++++++++++')
-    train_dataloader = DataLoader(train, batch_size=10)
-    print(type(train_dataloader))
+    train_dataloader = DataLoader(train, batch_size=1)
     print('train test')
     for i, (src, target) in enumerate(train_dataloader):
         print('..', {i})
