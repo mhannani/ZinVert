@@ -1,5 +1,5 @@
-from config import *
-from Vocabulary import Vocabulary
+from .config import *
+from .Vocabulary import Vocabulary
 from torch.nn.utils.rnn import pad_sequence
 
 
