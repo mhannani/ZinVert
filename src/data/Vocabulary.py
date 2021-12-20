@@ -8,7 +8,7 @@ from config import *
 
 class Vocabulary:
     """
-    Build processed for a language.
+    Builds and save vocabulary for a language.
     """
 
     def __init__(self, freq_threshold=1):
