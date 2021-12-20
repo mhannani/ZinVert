@@ -50,15 +50,14 @@ class Vocabulary:
     def build_vocab(self):
         """
         Build the vocabulary of the given language.
-        :param data_iterator: Iterator
-            Data iterator.
-        :return: List of Vocab
+        :return: List of Vocabs
         """
         vocabulary = {}
         for lang in [SRC_LANGUAGE, TGT_LANGUAGE]:
             data_iterator = Multi30k(root="../.data", split='train', language_pair=('en', 'de'))
-            vocabulary[lang] = build_vocab_from_iterator(self._get_tokens(data_iterator, lang), min_freq=self.freq_threshold,
-                                                   specials=SPECIAL_SYMBOLS, special_first=True)
+            vocabulary[lang] = build_vocab_from_iterator(self._get_tokens(data_iterator, lang),
+                                                         min_freq=self.freq_threshold, specials=SPECIAL_SYMBOLS,
+                                                         special_first=True)
             vocabulary[lang].set_default_index(UNK_IDX)
 
         return vocabulary
