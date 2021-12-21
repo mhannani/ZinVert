@@ -10,7 +10,7 @@ class CollateFn:
 
     def __init__(self):
         """
-        Class constructor.
+        The class constructor.
         """
         self.pad_index = PAD_IDX
         self.vocab = Vocabulary(freq_threshold=1)
@@ -19,7 +19,7 @@ class CollateFn:
     def __call__(self, batch):
         """
         Allow the class to be called as function.
-        :return:
+        :return: source, and target as batches.
         """
 
         # split the batch

@@ -18,7 +18,6 @@ def get_data(batch_size, split='train'):
     sets = {'train': train, 'valid': valid, 'test': test}
     if split in ('train', 'valid', 'test'):
         iterator = DataLoader(sets[split], batch_size=batch_size, collate_fn=CollateFn())
-
     else:
         raise ValueError('Split name not found !')
 

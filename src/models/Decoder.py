@@ -1,8 +1,85 @@
 import torch.nn as nn
 
 
+class OneStepDecoder(nn.Module):
+    """
+    The OneStepDecoder model.
+    """
+
+    def __init__(self, input_output_dim, embedding_dim, hidden_dim, n_layers, dropout_prob):
+        """
+        Class constructor.
+        :param input_output_dim: vocabulary size
+        :param embedding_dim: embedding size
+        :param hidden_dim: hidden state size
+        :param n_layers: number of layers
+        :param dropout_prob: dropout probability
+        """
+
+        super().__init__()
+
+        self.input_output_dim = input_output_dim
+
+        self.embedding = nn.Embedding(input_output_dim, embedding_dim)
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers, dropout=dropout_prob)
+        self.fc = nn.Linear(hidden_dim, input_output_dim)
+        self.dropout = nn.Dropout(dropout_prob)
+
+    def forward(self, target_token,  hidden, cell):
+        """
+        Forward pass
+        :param target_token: ground truth target sentence.
+        :param hidden: hidden state
+        :param cell: cell state
+        :return: output, hidden state, and cell state
+        """
+
+        # Batch the target token
+        target_token = target_token.unsqueeze(0)
+
+        # Embedding layer
+        embedding_layer = self.dropout(self.embedding(target_token))
+
+        # LSTM cell
+        output, (hidden, cell) = self.lstm(embedding_layer, (hidden, cell))
+
+        # Fully connected layer
+        linear = self.fc(output.squeeze(0))
+
+        return linear, hidden, cell
+
+
 class Decoder(nn.Module):
     """
-    The Decoder model.
+    The Decoder class
     """
-    pass
+    def __init__(self, one_step_decoder, device):
+        """
+        The class constructor.
+        :param one_step_decoder: OneStepDecoder
+        :param device: default device, 'cpu' or 'gpu'.
+        """
+
+        super().__init__()
+        self.one_step_decoder = one_step_decoder
+        self.device = device
+
+    def forward(self, target, hidden, cell, teacher_forcing_ratio = 0.5):
+        """
+        Forward pass.
+        :param target: batch
+            Target batch of sentences
+        :param hidden: torch.tensor
+            Hidden state of last time step, encoder's last hidden state as the first
+            hidden state of the OneStepEncoder model.
+        :param cell: Cell state of the time step, encoder's last hidden state as the first
+        cell state of the OneStepEncoder model.
+        :param teacher_forcing_ratio: double
+            teacher forcing ratio, RNN networks training strategy.
+            see also : https://arxiv.org/abs/1610.09038
+        :return:
+        """
+
+        # get the length of the target sentence and size of a batch.
+        target_len, batch_size = target.shape
+

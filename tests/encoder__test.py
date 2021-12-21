@@ -11,7 +11,7 @@ if __name__ == "__main__":
 
     vocab = Vocabulary()
     vocabulary = vocab.build_vocab()
-    train_set = get_data(batch_size=10, split='train')
+    train_set = get_data(batch_size=512, split='train')
     vocab_size = len(vocabulary['en'])
 
     encoder = Encoder(vocab_size, embedding_dim, hidden_dim, n_layers=2, dropout_prob=dropout)
