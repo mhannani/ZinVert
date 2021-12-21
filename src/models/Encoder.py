@@ -30,7 +30,7 @@ class Encoder(nn.Module):
         self.embedding = nn.Embedding(self.vocab_length, self.embedding_dim)
 
         # LSTM cell
-        self.lstm = nn.LSTM(self.embedding, self.hidden_dim, self.n_layers)
+        self.lstm = nn.LSTM(self.embedding_dim, self.hidden_dim, self.n_layers, dropout=dropout_prob)
 
         # dropout layer
         self.dropout = nn.Dropout(self.dropout_prob)
