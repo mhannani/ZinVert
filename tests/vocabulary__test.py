@@ -7,12 +7,15 @@ if __name__ == "__main__":
     vocab()  # calls the __call__ function (save vocabularies)
 
     en_voc, de_voc = vocab.vocabulary['en'], vocab.vocabulary['de']
+    print(type(en_voc))
     print(en_voc.get_stoi())
     print('==============================================')
     print(de_voc.get_stoi())
     print('vocabulary de size: ', len(de_voc.get_stoi()))
     print('vocabulary en size: ', len(en_voc.get_stoi()))
 
+    print('Getting pad index')
+    print('For English: ', en_voc.vocab)
     print('++++++++++++++++++++++++++++++++++++++++++++++')
     print('The tensor_transform function testing')
     token_idx = [10, 20, 5, 100, 120, 302]
@@ -24,3 +27,4 @@ if __name__ == "__main__":
     phrase = "Two young, White males are outside near many bushes."
     print(vocab.preprocess()['en'](phrase))  # tensor([   2, 1167, 8948,  595,  132,    6,    3])
     print(vocab.postprocess(vocab.preprocess()['en'](phrase), 'en'))
+
