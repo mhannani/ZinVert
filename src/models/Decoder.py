@@ -117,8 +117,5 @@ class Decoder(nn.Module):
             else:
                 input_sequence = predicted_sequence
 
-
-
-
         return predictions
 

@@ -23,8 +23,20 @@ if __name__ == "__main__":
     decoder.train()
 
     for i, (src, tgt) in enumerate(train):
+        print('source sentence: ', src)
+        print('target sentence: ', tgt)
+        print('=======================')
+        print('source sentence shape: ', src.shape)
+        print('target sentence shape: ', tgt.shape)
+
         encoder_hidden, encoder_cell = encoder(src)
-        predict = decoder(tgt, encoder_hidden, encoder_cell)
-        print('predict', predict)
-        print('predict', predict.shape)
+        output = decoder(tgt, encoder_hidden, encoder_cell)
+        print('output: ', output.shape)
+
+        output_dim = output.shape[-1]
+        tgt = tgt[1:].view(-1)
+        output = output[1:].view(-1, output_dim)
+
+        print('decoder output shape collapsed: ', output.shape)
+        print('ground truth target shape collapsed: ', tgt.shape)
         break

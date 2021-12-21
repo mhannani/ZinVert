@@ -23,5 +23,4 @@ if __name__ == "__main__":
     print('preprocess sentences function test')
     phrase = "Two young, White males are outside near many bushes."
     print(vocab.preprocess()['en'](phrase))  # tensor([   2, 1167, 8948,  595,  132,    6,    3])
-    print(vocab.postprocess(torch.tensor([   2,    5,  602,    8,   10,  507,  467,  270, 3436,  246,   21,   20,
-         116,   17,   15,   11,    9,    4,    3]), 'en'))
+    print(vocab.postprocess(vocab.preprocess()['en'](phrase), 'en'))
