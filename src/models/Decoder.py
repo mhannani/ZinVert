@@ -1,3 +1,6 @@
+import random
+
+import torch
 import torch.nn as nn
 
 
@@ -82,4 +85,40 @@ class Decoder(nn.Module):
 
         # get the length of the target sentence and size of a batch.
         target_len, batch_size = target.shape
+
+        # get the target language's vocabulary size
+        target_vocab_size = self.one_step_decoder.input_output_dim
+
+        # predicted indices
+        predictions = torch.zeros(target_len, batch_size, target_vocab_size).to(self.device)
+
+        # the sos token will be the first input to the OneStepDecoder,
+        # hence to LSTM cell at the first time step
+
+        input_sequence = target[0, :]
+
+        # go through all time step
+        for time_step in range(1, target_len):
+
+            # get output, hidden and cell state of the next time step
+            predicted_index, hidden, cell = self.one_step_decoder(input_sequence, hidden, cell)
+
+            # store the predicted indices at that time step
+            predictions[time_step] = predicted_index
+
+            # take the index of the maximum value
+            predicted_sequence = predicted_index.argmax(1)
+
+            # Apply teacher forcing technique
+            use_teacher_forcing = True if random.random() < teacher_forcing_ratio else False
+
+            if use_teacher_forcing:
+                input_sequence = target[time_step]
+            else:
+                input_sequence = predicted_sequence
+
+
+
+
+        return predictions
 
