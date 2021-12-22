@@ -40,7 +40,7 @@ def create_seq2seq(src_vocab, tgt_vocab):
     optimizer = Adam(seq2seq.parameters())
 
     # ignore padding indices
-    TGT_PAD_IDX = tgt_vocab.stoi[SPECIAL_SYMBOLS[PAD_IDX]]
+    TGT_PAD_IDX = tgt_vocab.lookup_indices([SPECIAL_SYMBOLS[PAD_IDX]])[0]
 
     # loss function
     criterion = nn.CrossEntropyLoss(ignore_index=TGT_PAD_IDX)
