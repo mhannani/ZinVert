@@ -31,8 +31,8 @@ class Vocabulary:
         :return: spacy.tokenizer
         """
 
-        token_transform = {SRC_LANGUAGE: get_tokenizer('spacy', language=LANG_SHORTCUTS['en']),
-                           TGT_LANGUAGE: get_tokenizer('spacy', language=LANG_SHORTCUTS['de'])}
+        token_transform = {SRC_LANGUAGE: get_tokenizer('spacy', language=LANG_SHORTCUTS['de']),
+                           TGT_LANGUAGE: get_tokenizer('spacy', language=LANG_SHORTCUTS['en'])}
 
         return token_transform
 
@@ -55,7 +55,7 @@ class Vocabulary:
         """
         vocabulary = {}
         for lang in [SRC_LANGUAGE, TGT_LANGUAGE]:
-            data_iterator = Multi30k(root='../data/.data', split='train', language_pair=('en', 'de'))
+            data_iterator = Multi30k(root='../data/.data', split='train', language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
             vocabulary[lang] = build_vocab_from_iterator(self._get_tokens(data_iterator, lang),
                                                          min_freq=self.freq_threshold, specials=SPECIAL_SYMBOLS,
                                                          special_first=True)
@@ -103,7 +103,6 @@ class Vocabulary:
             :return: Tensor
                 Input as Tensor
             """
-            print(sentence)
             for transform in transforms:
                 sentence = transform(sentence)
             return sentence
@@ -132,7 +131,7 @@ class Vocabulary:
         for lang in [SRC_LANGUAGE, TGT_LANGUAGE]:
             sentence_transform[lang] = self.pipeline(
                 self.get_tokenizer()[lang],
-                self.build_vocab()[lang],
+                self.vocabulary[lang],
                 self.tensor_transform
             )
 
@@ -144,7 +143,7 @@ class Vocabulary:
         with open(filename, 'w') as f:
             json.dump(data, f)
 
-    def save_vocabulary(self, lang=('en', 'de')):
+    def save_vocabulary(self, lang=('de', 'en')):
         """
         Save processed to disk
         :return:

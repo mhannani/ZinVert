@@ -4,7 +4,7 @@ from .collate_fn import CollateFn
 from torch.utils.data import DataLoader
 
 
-def get_data(root='../data/.data', batch_size=512, split='train'):
+def get_data(root='../data/.data', batch_size=256, split='train'):
     """
     Get the Multi30k dataset and vocabulary with both languages.
     :param root: str
@@ -20,6 +20,7 @@ def get_data(root='../data/.data', batch_size=512, split='train'):
     sets = {'train': train, 'valid': valid, 'test': test}
     if split in ('train', 'valid', 'test'):
         iterator = DataLoader(sets[split], batch_size=batch_size, collate_fn=CollateFn())
+
     else:
         raise ValueError('Split name not found !')
 

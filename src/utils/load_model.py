@@ -9,7 +9,7 @@ def load_checkpoints(checkpoint_name):
     """
 
     # Get checkpoint from file
-    checkpoint = torch.load(checkpoint_name)
+    checkpoint = torch.load(checkpoint_name, map_location=torch.device('cpu'))
 
     # Get state_dict of the model
     model_state_dict = checkpoint['model_state_dict']

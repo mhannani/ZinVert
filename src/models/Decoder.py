@@ -83,8 +83,7 @@ class Decoder(nn.Module):
         :return:
         """
 
-        # get the length of the target sentence and size of a batch.
-        target_len, batch_size = target.shape
+        target_len, batch_size = target.shape[0], target.shape[1]
 
         # get the target language's vocabulary size
         target_vocab_size = self.one_step_decoder.input_output_dim

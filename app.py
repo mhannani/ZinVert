@@ -1,7 +1,7 @@
 import streamlit as st
 from src.app import SessionState
 from src.app.load_assets import *
-
+from src.utils.inference import inference
 GitHub = "https://github.com/mhannani/ZinVert"
 WebApp = "https://zinvert.mhannani.com/"
 
@@ -23,12 +23,13 @@ st.title("Welcome to ZinVert")
 
 # setup the state of the app
 session_state = SessionState.get(translate_button=False, show_translated_sentence=False)
-st.subheader('~ Input Sentence (In English)')
-en_sentence = st.text_input('', help='English input sentence to our seq2seq model.', placeholder='Is that real ?')
+st.subheader('~ Input Sentence (In Dutch)')
+de_sentence = st.text_input('', help='Dutch input sentence to our seq2seq model.', placeholder='Is that real ?')
+
 
 translate_button = st.button('Translate')
 
 if translate_button:
-    st.subheader('~ Dutch sentence')
-    output = st.text_input('', help='Dutch output sentence from seq2seq model.',
-                           value=en_sentence)
+    en_sentence = inference(de_sentence)
+    st.subheader('~ English sentence')
+    output = st.text_input('', value=en_sentence, help='English output sentence from seq2seq model.')

@@ -10,13 +10,12 @@ class CustomMulti30k:
     def __init__(self, root, language_pair=(SRC_LANGUAGE, TGT_LANGUAGE)):
         """
         The class constructor.
-        :param language_pair: default: ('en', 'de')
+        :param language_pair: default: ('de', 'en')
         """
 
         self.train, self.valid, self.test = Multi30k(root=root,
                                                      split=('train', 'valid', 'test'),
                                                      language_pair=language_pair)
-
     def extract_sets(self):
         """
         Extracts train, valid and test sets from Multi30K dataset.
