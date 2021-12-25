@@ -13,14 +13,12 @@ class CustomMulti30k:
         :param language_pair: default: ('de', 'en')
         """
 
-        self.train, self.valid, self.test = Multi30k(root=root,
-                                                     split=('train', 'valid', 'test'),
-                                                     language_pair=language_pair)
+        self.train, self.valid, self.test = Multi30k(root=root, split=('train', 'valid', 'test'), language_pair=language_pair)
+
     def extract_sets(self):
         """
         Extracts train, valid and test sets from Multi30K dataset.
-        :return: List
+        :return: List of sets
         """
 
-        return self.train, self.valid, self.test
-
+        return list(self.train), list(self.valid), list(self.test)

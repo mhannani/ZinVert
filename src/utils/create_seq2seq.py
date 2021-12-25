@@ -21,6 +21,8 @@ def create_seq2seq(src_vocab, tgt_vocab):
     src_vocab__len = len(src_vocab)
     tgt_vocab__len = len(tgt_vocab)
 
+    print(src_vocab__len, tgt_vocab__len)
+
     # encoder model
     encoder = Encoder(src_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
 
@@ -40,7 +42,8 @@ def create_seq2seq(src_vocab, tgt_vocab):
     optimizer = Adam(seq2seq.parameters())
 
     # ignore padding indices
-    TGT_PAD_IDX = tgt_vocab.lookup_indices([SPECIAL_SYMBOLS[PAD_IDX]])[0]
+    # TGT_PAD_IDX = tgt_vocab.lookup_indices([SPECIAL_SYMBOLS[PAD_IDX]])[0]
+    TGT_PAD_IDX = 1
 
     # loss function
     criterion = nn.CrossEntropyLoss(ignore_index=TGT_PAD_IDX)

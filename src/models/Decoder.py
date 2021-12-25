@@ -1,5 +1,5 @@
 import random
-
+from src.data.config import *
 import torch
 import torch.nn as nn
 
@@ -7,6 +7,54 @@ import torch.nn as nn
 class OneStepDecoder(nn.Module):
     """
     The OneStepDecoder model.
+    """
+
+    def __init__(self, input_output_dim, embedding_dim, hidden_dim, n_layers, dropout_prob):
+        """
+        Class constructor.
+        :param input_output_dim: vocabulary size
+        :param embedding_dim: embedding size
+        :param hidden_dim: hidden state size
+        :param n_layers: number of layers
+        :param dropout_prob: dropout probability
+        """
+
+        super().__init__()
+
+        self.input_output_dim = input_output_dim
+
+        self.embedding = nn.Embedding(input_output_dim, embedding_dim)
+        self.lstm = nn.LSTM(embedding_dim, hidden_dim, n_layers, dropout=dropout_prob)
+        self.fc = nn.Linear(hidden_dim, input_output_dim)
+        self.dropout = nn.Dropout(dropout_prob)
+
+    def forward(self, target_token,  hidden, cell):
+        """
+        Forward pass
+        :param target_token: ground truth target sentence.
+        :param hidden: hidden state
+        :param cell: cell state
+        :return: output, hidden state, and cell state
+        """
+
+        # Batch the target token
+        target_token = target_token.unsqueeze(0)
+
+        # Embedding layer
+        embedding_layer = self.dropout(self.embedding(target_token))
+
+        # LSTM cell
+        output, (hidden, cell) = self.lstm(embedding_layer, (hidden, cell))
+
+        # Fully connected layer
+        linear = self.fc(output.squeeze(0))
+
+        return linear, hidden, cell
+
+
+class OneStepDecoderWithAttention(nn.Module):
+    """
+    The OneStepDecoder model with attention mechanism.
     """
 
     def __init__(self, input_output_dim, embedding_dim, hidden_dim, n_layers, dropout_prob):
@@ -67,7 +115,7 @@ class Decoder(nn.Module):
         self.one_step_decoder = one_step_decoder
         self.device = device
 
-    def forward(self, target, hidden, cell, teacher_forcing_ratio = 0.5):
+    def forward(self, target, hidden, cell, teacher_forcing_ratio=TEACHER_FORCING_RATIO):
         """
         Forward pass.
         :param target: batch

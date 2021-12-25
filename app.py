@@ -1,7 +1,7 @@
 import streamlit as st
 from src.app import SessionState
 from src.app.load_assets import *
-from src.utils.inference import inference
+from src.utils import inference
 GitHub = "https://github.com/mhannani/ZinVert"
 WebApp = "https://zinvert.mhannani.com/"
 

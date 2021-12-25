@@ -2,7 +2,7 @@ import spacy
 from torch import LongTensor
 
 
-def get_tokens(sentence):
+def _get_tokens(sentence):
     """
     Get tokens of an  input sentence.
     :param sentence: str
@@ -37,7 +37,7 @@ def preprocess(sentence, src_vocabulary):
     """
 
     # tokenize the sentence
-    tokens = get_tokens(sentence)
+    tokens = _get_tokens(sentence)
 
     # append <sos> and <eos> tokens
     tokens = ['<sos>'] + [token.lower() for token in tokens] + ['<eos>']

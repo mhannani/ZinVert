@@ -5,4 +5,7 @@ class Attention(nn.Module):
     """
     The attention model
     """
-    pass
+
+    def __init__(self, encoder):
+        super().__init__()
+        pass

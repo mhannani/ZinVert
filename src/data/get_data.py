@@ -2,9 +2,10 @@ from .Multi30k import CustomMulti30k
 from .Vocabulary import Vocabulary
 from .collate_fn import CollateFn
 from torch.utils.data import DataLoader
+from src.data.config import *
 
 
-def get_data(root='../data/.data', batch_size=256, split='train'):
+def get_data(root='../data/.data', batch_size=BATCH_SIZE, split='train'):
     """
     Get the Multi30k dataset and vocabulary with both languages.
     :param root: str
@@ -19,7 +20,7 @@ def get_data(root='../data/.data', batch_size=256, split='train'):
     train, valid, test = CustomMulti30k(root=root).extract_sets()
     sets = {'train': train, 'valid': valid, 'test': test}
     if split in ('train', 'valid', 'test'):
-        iterator = DataLoader(sets[split], batch_size=batch_size, collate_fn=CollateFn())
+        iterator = DataLoader(sets[split][:400], batch_size=batch_size, collate_fn=CollateFn())
 
     else:
         raise ValueError('Split name not found !')

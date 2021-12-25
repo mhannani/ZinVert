@@ -1,4 +1,5 @@
 import torch.nn as nn
+from src.data.config import *
 
 
 class Encoder(nn.Module):
@@ -6,7 +7,7 @@ class Encoder(nn.Module):
     The Encoder model.
     """
 
-    def __init__(self, vocab_length, embedding_dim, hidden_dim, n_layers, dropout_prob):
+    def __init__(self, vocab_length, embedding_dim, hidden_dim, n_layers=N_LAYERS, dropout_prob=DROPOUT):
         """
         The class constructor.
 
@@ -56,7 +57,7 @@ class EncoderAttention(nn.Module):
     The Encoder variant model for seq2seq with attention mechanism.
     """
 
-    def __init__(self, vocab_length, embedding_dim, hidden_dim, n_layers, dropout_prob):
+    def __init__(self, vocab_length, embedding_dim, hidden_dim, n_layers=N_LAYERS, dropout_prob=DROPOUT):
         """
         The class constructor.
 
@@ -98,8 +99,4 @@ class EncoderAttention(nn.Module):
         # Get the output from the LSTM (hidden state and cell state).
         outputs, hidden = self.gru(embed)
 
-        return hidden
-
-
-
-
+        return outputs, hidden
