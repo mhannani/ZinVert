@@ -21,8 +21,6 @@ def create_seq2seq(src_vocab, tgt_vocab):
     src_vocab__len = len(src_vocab)
     tgt_vocab__len = len(tgt_vocab)
 
-    print(src_vocab__len, tgt_vocab__len)
-
     # encoder model
     encoder = Encoder(src_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
 

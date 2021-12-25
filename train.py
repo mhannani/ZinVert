@@ -4,12 +4,12 @@ from src.data.config import *
 from src.data import get_data
 from src.utils import create_seq2seq
 from src.data import Vocabulary
-from src.utils import save_model
+from src.utils import save_model, load_checkpoints
 from tqdm import tqdm
 from time import gmtime, strftime
 
 
-def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS):
+def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_training_checkpoints=None):
     """
     Train the seq2seq network for neural translation task.
 
@@ -18,14 +18,30 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS):
     :param src_vocab: Source language vocabulary(Dutch).
     :param tgt_vocab: Target language vocabulary(English).
     :param epochs: number of epochs
+    :param continue_training_checkpoints: str
+        Path to the checkpoint file to resume training from it
     :return: Trained model.
     """
 
     # create the model: model, optimizer, criterion
     seq2seq, optimizer, criterion = create_seq2seq(src_vocab, tgt_vocab)
 
+    # starting epoch, will be 1 for when training from scratch
+    from_epoch = 1
+
+    # load the pretrained model with its learned weights
+    if continue_training_checkpoints is not None:
+        # load the checkpoint containing states of optimizer, model and the last epoch
+        model_state_dict, optimizer_state_dict, from_epoch, _, _ = load_checkpoints(continue_training_checkpoints)
+
+        # update the state of the model with the saved state
+        seq2seq.load_state_dict(model_state_dict)
+
+        # update the state of the optimizer with the saved state
+        optimizer.load_state_dict(optimizer_state_dict)
+
     # Training loop
-    for epoch in range(1, epochs + 1):
+    for epoch in range(from_epoch, epochs + 1):
         # progress bar
         p_bar = tqdm(total=len(train_iter), bar_format='{l_bar}{bar:10}{r_bar}',
                      unit=' batches', ncols=200, mininterval=0.05, colour='#00ff00')
@@ -54,6 +70,7 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS):
             # discard <sos> token from target
             tgt = tgt[1:].view(-1)
 
+            # compute the loss
             loss = criterion(output, tgt)
 
             # back propagation
@@ -80,7 +97,8 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS):
 
             valid_loss = []
             for src, tgt in valid_iter:
-                # forward pass
+
+                # forward pass for validation data
                 outputs = seq2seq(src, tgt)
 
                 # output dimension, corresponds to tgt_vocab__len
@@ -103,8 +121,8 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS):
         p_bar.close()
 
         # Save the checkpoint
-        if train_loss[-1] < train_loss[-2]:
-            save_model(seq2seq, src_vocab, tgt_vocab, epoch=epoch, filename=f'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{round(sum(train_loss) / len(train_loss))}')
+        filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{round(sum(train_loss) / len(train_loss))}'
+        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, filename)
 
 
 if __name__ == "__main__":
@@ -128,5 +146,6 @@ if __name__ == "__main__":
     tgt_vocabulary = vocabularies['en']
 
     # Train network
-    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary)
+    checkpoint = 'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_3__AT__2021_12_25__23_36_38__TRAIN_LOSS__5'
+    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, continue_training_checkpoints=None)
 
