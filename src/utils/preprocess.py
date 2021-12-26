@@ -42,7 +42,7 @@ def preprocess(sentence, src_vocabulary):
     # append <sos> and <eos> tokens
     tokens = ['<sos>'] + [token.lower() for token in tokens] + ['<eos>']
 
-    sentence_indices = [src_vocabulary.stoi[token] for token in tokens]
+    sentence_indices = [src_vocabulary.get_stoi()[token] for token in tokens]
 
     sentence_tensor = LongTensor(sentence_indices).unsqueeze(1)
 
@@ -50,6 +50,6 @@ def preprocess(sentence, src_vocabulary):
 
 
 if __name__ == "__main__":
-    sentence_tokens = get_tokens('Leute Reparieren das Dach eines Hauses.')
+    sentence_tokens = _get_tokens('Leute Reparieren das Dach eines Hauses.')
     print(sentence_tokens)
 

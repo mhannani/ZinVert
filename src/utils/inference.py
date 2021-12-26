@@ -24,7 +24,7 @@ def inference(sentence):
     hidden, cell = seq_2_seq.encoder(sentence_tensor)
 
     # get the <sos> representation in vocabulary {As List} to be as the the first cell input
-    sos_token_index = [tgt_vocabulary.stoi['<sos>']]
+    sos_token_index = [tgt_vocabulary.get_stoi()['<sos>']]
 
     # convert it to tensor
     sos_or_next_token_tensor = LongTensor(sos_token_index)
@@ -56,7 +56,7 @@ def inference(sentence):
             # and it's a probability distribution of each token in target vocabulary
             sos_or_next_token_tensor = output.argmax(1)
 
-            predicted_token = tgt_vocabulary.itos[sos_or_next_token_tensor.item()]
+            predicted_token = tgt_vocabulary.get_itos()[sos_or_next_token_tensor.item()]
 
             # if we got <eos> then stop the loop
             if predicted_token == '<eos>':
@@ -66,6 +66,6 @@ def inference(sentence):
                 tgt_indices.append(sos_or_next_token_tensor.item())
                 trg_sentence.append(predicted_token)
 
-        predicted_words = [tgt_vocabulary.itos[i] for i in tgt_indices]
+        predicted_words = [tgt_vocabulary.get_itos()[i] for i in tgt_indices]
 
         return " ".join(predicted_words)

@@ -13,7 +13,8 @@ def seq2seq_inference(checkpoint_filename):
     :return: model, src_vocabulary, tgt_vocabulary
     """
     # load checkpoint
-    model_state_dict, src_vocabulary, tgt_vocabulary = load_checkpoints(checkpoint_filename)
+
+    model_state_dict, _, _, _, src_vocabulary, tgt_vocabulary = load_checkpoints(checkpoint_filename)
     # vocabularies size
     src_vocabulary_len = len(src_vocabulary)
     tgt_vocabulary_len = len(tgt_vocabulary)

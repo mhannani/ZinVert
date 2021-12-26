@@ -1,6 +1,2 @@
-from datetime import timedelta
-from termcolor import colored
-
-print(timedelta(seconds=60*60*24+1))
-
-print(colored('The training process of the model took: ', 'green'), colored(f'{timedelta(seconds=60*60*24+1)}', 'red'))
+import torch
+torch.jit.load('checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_1__AT__2021_12_26__17_16_04__TRAIN_LOSS__5.pt')

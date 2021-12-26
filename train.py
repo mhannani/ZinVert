@@ -1,7 +1,7 @@
 import torch
 from termcolor import colored
 from tqdm import tqdm
-from time import gmtime, strftime, time
+from time import time
 from datetime import timedelta
 from torch.nn.utils import clip_grad_norm_
 from src.data.config import *
@@ -135,10 +135,11 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
         current_time_elapsed = end_time - start_time
         time_elapsed += current_time_elapsed
 
-
         # Save the checkpoint
-        filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{round(sum(train_loss) / len(train_loss))}.pt'
-        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, filename, time_elapsed)
+        loss = round(sum(train_loss) / len(train_loss))
+        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, loss, time_elapsed)
+
+        # save the JIT(Just In Time compilation) model
 
     print(colored('The training process of the model took: ', 'green'), colored(f'{timedelta(seconds=time_elapsed)}', 'red'))
 
