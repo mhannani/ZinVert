@@ -1,12 +1,14 @@
 import torch
+from termcolor import colored
+from tqdm import tqdm
+from time import gmtime, strftime, time
+from datetime import timedelta
 from torch.nn.utils import clip_grad_norm_
 from src.data.config import *
 from src.data import get_data
 from src.utils import create_seq2seq
 from src.data import Vocabulary
 from src.utils import save_model, load_checkpoints
-from tqdm import tqdm
-from time import gmtime, strftime
 
 
 def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_training_checkpoints=None):
@@ -26,13 +28,16 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
     # create the model: model, optimizer, criterion
     seq2seq, optimizer, criterion = create_seq2seq(src_vocab, tgt_vocab)
 
-    # starting epoch, will be 1 for when training from scratch
+    # starting epoch, will be 1 when training from scratch
     from_epoch = 1
+
+    # Elapsed time during training, will be 0 seconds when training from scratch
+    time_elapsed = 0
 
     # load the pretrained model with its learned weights
     if continue_training_checkpoints is not None:
         # load the checkpoint containing states of optimizer, model and the last epoch
-        model_state_dict, optimizer_state_dict, from_epoch, _, _ = load_checkpoints(continue_training_checkpoints)
+        model_state_dict, optimizer_state_dict, from_epoch, time_elapsed, _, _ = load_checkpoints(continue_training_checkpoints)
 
         # update the state of the model with the saved state
         seq2seq.load_state_dict(model_state_dict)
@@ -40,6 +45,8 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
         # update the state of the optimizer with the saved state
         optimizer.load_state_dict(optimizer_state_dict)
 
+    # compute the Elapsed time for the current training job
+    start_time = time()
     # Training loop
     for epoch in range(from_epoch, epochs + 1):
         # progress bar
@@ -120,9 +127,17 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
             refresh=False)
         p_bar.close()
 
+        # Elapsed time of the current terminated job
+        end_time = time()
+
+        # Compute the Elapsed time
+        time_elapsed += (end_time - start_time)
+
         # Save the checkpoint
-        filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{round(sum(train_loss) / len(train_loss))}'
-        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, filename)
+        filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{round(sum(train_loss) / len(train_loss))}.pt'
+        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, filename, time_elapsed)
+
+    print(colored('The training process of the model took: ', 'green'), colored(f'{timedelta(seconds=time_elapsed)}', 'red'))
 
 
 if __name__ == "__main__":
@@ -146,6 +161,5 @@ if __name__ == "__main__":
     tgt_vocabulary = vocabularies['en']
 
     # Train network
-    checkpoint = 'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_3__AT__2021_12_25__23_36_38__TRAIN_LOSS__5'
+    checkpoint = 'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_3__AT__2021_12_25__23_36_38__TRAIN_LOSS__5.pt'
     train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, continue_training_checkpoints=None)
-

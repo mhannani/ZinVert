@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 import torch
 
 
@@ -14,6 +16,9 @@ def load_checkpoints(checkpoint_name):
     # The epoch when training has been left
     epoch = checkpoint['epoch']
 
+    # The time elapsed during training
+    time_elapsed = checkpoint['time_elapsed']
+
     # Get state_dict of the model
     model_state_dict = checkpoint['model_state_dict']
 
@@ -24,4 +29,9 @@ def load_checkpoints(checkpoint_name):
     src_vocabulary = checkpoint['src_vocabulary']
     tgt_vocabulary = checkpoint['tgt_vocabulary']
 
-    return model_state_dict, optimizer_state_dict, epoch, src_vocabulary, tgt_vocabulary
+    return model_state_dict, optimizer_state_dict, epoch, time_elapsed, src_vocabulary, tgt_vocabulary
+
+
+if __name__ == "__main__":
+    _, _, _, time_elapsed, _, _ = load_checkpoints('checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_2__AT__2021_12_26__00_44_38__TRAIN_LOSS__8.pt')
+    print(timedelta(seconds=time_elapsed))
