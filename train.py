@@ -130,7 +130,7 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
         # Elapsed time of the current terminated job
         end_time = time()
 
-        # Compute the Elapsed time
+        # Compute the total elapsed time of training
         time_elapsed += (end_time - start_time)
 
         # Save the checkpoint
