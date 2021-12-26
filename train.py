@@ -33,7 +33,6 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
 
     # Elapsed time during training, will be 0 seconds when training from scratch
     time_elapsed = 0
-
     # load the pretrained model with its learned weights
     if continue_training_checkpoints is not None:
         # load the checkpoint containing states of optimizer, model and the last epoch
@@ -45,10 +44,11 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
         # update the state of the optimizer with the saved state
         optimizer.load_state_dict(optimizer_state_dict)
 
-    # compute the Elapsed time for the current training job
-    start_time = time()
     # Training loop
     for epoch in range(from_epoch, epochs + 1):
+        # compute the Elapsed time for the current training job
+        start_time = time()
+
         # progress bar
         p_bar = tqdm(total=len(train_iter), bar_format='{l_bar}{bar:10}{r_bar}',
                      unit=' batches', ncols=200, mininterval=0.05, colour='#00ff00')
@@ -131,7 +131,10 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
         end_time = time()
 
         # Compute the total elapsed time of training
-        time_elapsed += (end_time - start_time)
+        # compute the elapsed time for that training job
+        current_time_elapsed = end_time - start_time
+        time_elapsed += current_time_elapsed
+
 
         # Save the checkpoint
         filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{round(sum(train_loss) / len(train_loss))}.pt'
