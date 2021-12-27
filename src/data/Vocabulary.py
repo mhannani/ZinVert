@@ -59,7 +59,7 @@ class Vocabulary:
             vocabulary[lang] = build_vocab_from_iterator(self._get_tokens(data_iterator, lang),
                                                          min_freq=self.freq_threshold, specials=SPECIAL_SYMBOLS,
                                                          special_first=True)
-            vocabulary[lang].set_default_index(UNK_IDX)
+            vocabulary[lang].set_default_index(vocabulary[lang]['<unk>'])
 
         return vocabulary
 
@@ -139,6 +139,13 @@ class Vocabulary:
 
     @staticmethod
     def _save_file(filename, data):
+        """
+        Saves data to a file
+        :param filename: str
+            Filename
+        :param data:
+        :return: None
+        """
         # save the processed as json
         with open(filename, 'w') as f:
             json.dump(data, f)

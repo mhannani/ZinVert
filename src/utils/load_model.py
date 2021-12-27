@@ -33,5 +33,5 @@ def load_checkpoints(checkpoint_name):
 
 
 if __name__ == "__main__":
-    _, _, _, time_elapsed, _, _ = load_checkpoints('checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_3__AT__2021_12_26__16_35_07__TRAIN_LOSS__9.pt')
-    print(timedelta(seconds=time_elapsed))
+    model_state_dict, optimizer_state_dict, epoch, time_elapsed, src_vocabulary, tgt_vocabulary = load_checkpoints('checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_3__AT__2021_12_26__16_35_07__TRAIN_LOSS__9.pt')
+    print(type(src_vocabulary))

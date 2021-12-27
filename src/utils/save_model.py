@@ -3,7 +3,7 @@ from src.utils import preprocess
 from time import gmtime, strftime
 
 
-def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, time_elapsed, is_jit=True):
+def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, time_elapsed, is_jit=False):
     """
     Save trained model, along with source and target languages vocabularies.
 
@@ -37,15 +37,17 @@ def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, ti
     jit_filename = f'checkpoints/JIT/JIT__CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
 
     # save checkpoint
-    torch.save(checkpoint, filename)
+    # torch.save(checkpoint, filename)
 
     # if the JIT model required to be saved as well
     if is_jit:
         # save jit mode model
-        de_sentence = 'Ein Mann mit einem orangefarbenen Hut, der etwas anstarrt.'
+        de_sentence = 'Ein kleines Mädchen klettert in ein Spielhaus aus Holz.'
+        en_sentence = 'A little girl climbing into a wooden playhouse.'
 
         # Trace the model
-        traced = torch.jit.trace(model, preprocess(de_sentence, src_vocabulary))
+        print('preprocess(de_sentence, src_vocabulary)', preprocess(de_sentence, src_vocabulary))
+        traced = torch.jit.trace(model, (preprocess(de_sentence, src_vocabulary)[0], preprocess(en_sentence, tgt_vocabulary)[0]))
 
         # save traced model
         traced.save(jit_filename)

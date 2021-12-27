@@ -131,6 +131,7 @@ class Decoder(nn.Module):
         :return:
         """
 
+        # print('target====================================', target)
         target_len, batch_size = target.shape[0], target.shape[1]
 
         # get the target language's vocabulary size

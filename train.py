@@ -35,6 +35,7 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
     time_elapsed = 0
     # load the pretrained model with its learned weights
     if continue_training_checkpoints is not None:
+        print('Resume Training...')
         # load the checkpoint containing states of optimizer, model and the last epoch
         model_state_dict, optimizer_state_dict, from_epoch, time_elapsed, _, _ = load_checkpoints(continue_training_checkpoints)
 
@@ -135,11 +136,10 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
         current_time_elapsed = end_time - start_time
         time_elapsed += current_time_elapsed
 
+
         # Save the checkpoint
         loss = round(sum(train_loss) / len(train_loss))
         save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, loss, time_elapsed)
-
-        # save the JIT(Just In Time compilation) model
 
     print(colored('The training process of the model took: ', 'green'), colored(f'{timedelta(seconds=time_elapsed)}', 'red'))
 
@@ -157,6 +157,9 @@ if __name__ == "__main__":
     # Initialize vocabulary
     vocab = Vocabulary()
 
+    # Save vocabularies
+    vocab()
+
     # Build vocabularies
     vocabularies = vocab.build_vocab()
 
@@ -165,5 +168,5 @@ if __name__ == "__main__":
     tgt_vocabulary = vocabularies['en']
 
     # Train network
-    checkpoint = 'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_3__AT__2021_12_25__23_36_38__TRAIN_LOSS__5.pt'
-    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, continue_training_checkpoints=None)
+    checkpoint = 'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_18__AT__2021_12_27__11_15_50__TRAIN_LOSS__3.pt'
+    # train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, continue_training_checkpoints=checkpoint)

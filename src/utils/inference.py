@@ -4,6 +4,7 @@ from src.utils.load_model import load_checkpoints
 from src.utils.create_seq2seq import create_seq2seq
 from src.utils.preprocess import preprocess
 from src.utils.seq2seq_inference import seq2seq_inference
+from torch import jit
 
 
 def inference(sentence):
@@ -17,10 +18,15 @@ def inference(sentence):
     # Create model for inference
     seq_2_seq, src_vocabulary, tgt_vocabulary = seq2seq_inference(CHECKPOINT_PATH_WITHOUT_ATT)
 
+    # loading just in time compilation
+    # seq_2_seq = jit.load('checkpoints/JIT/model.pt')
+
+    # print(seq_2_seq)
     # Preprocess the sentence
     sentence_tensor, tokens = preprocess(sentence, src_vocabulary)
 
     # Forward pass for the encoder
+    print(sentence_tensor)
     hidden, cell = seq_2_seq.encoder(sentence_tensor)
 
     # get the <sos> representation in vocabulary {As List} to be as the the first cell input
