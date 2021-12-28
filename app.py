@@ -1,4 +1,5 @@
 import requests
+import json
 import streamlit as st
 from src.app import SessionState
 from src.app.load_assets import *
@@ -46,8 +47,8 @@ translate_button = st.button('Translate')
 
 if translate_button:
     # en_sentence = inference(de_sentence)
-    request = {"dutch_sentence": "Ein Boston Terrier läuft über saftig-grünes Gras vor einem weißen Zaun."}
-    en_sentence_json = https.fetch(session, f"http://127.0.0.1:8080/predictions/zin_vert_without_att", request)
-    print(en_sentence_json)
+    data = {"dutch_sentence": de_sentence}
+    json_data = json.dumps(data)
+    en_sentence_json = https.fetch(session, f"http://127.0.0.1:8080/predictions/zin_vert_without_att", json_data)
     st.subheader('~ English sentence')
-    # output = st.text_input('', value=en_sentence, help='English output sentence from seq2seq model.')
+    output = st.text_input('', value=en_sentence_json['en_sentence'], help='English output sentence from seq2seq model.')
