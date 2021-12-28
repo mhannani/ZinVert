@@ -1,13 +1,28 @@
+import requests
 import streamlit as st
 from src.app import SessionState
 from src.app.load_assets import *
 from src.utils import inference
+from src.app import https
+
 GitHub = "https://github.com/mhannani/ZinVert"
 WebApp = "https://zinvert.mhannani.com/"
 
+session = requests.Session()
+
+st.set_page_config(
+     page_title="ZinVert - dutch translation",
+     page_icon="🤖",
+     layout="wide",
+     initial_sidebar_state="expanded",
+     menu_items={
+         'Get Help': 'https://mhannani.com/',
+         'Report a bug': "https://www.github.com/mhannani/zinvert",
+         'About': "https://blog.mhannnai.com/posts/zinvert"
+     }
+ )
 
 icon(["fab fa-github fa-2x", "fas fa-globe fa-2x"], [GitHub, WebApp])
-
 
 st.sidebar.subheader("General Settings")
 
@@ -30,6 +45,9 @@ de_sentence = st.text_input('', help='Dutch input sentence to our seq2seq model.
 translate_button = st.button('Translate')
 
 if translate_button:
-    en_sentence = inference(de_sentence)
+    # en_sentence = inference(de_sentence)
+    request = {"dutch_sentence": "Ein Boston Terrier läuft über saftig-grünes Gras vor einem weißen Zaun."}
+    en_sentence_json = https.fetch(session, f"http://127.0.0.1:8080/predictions/zin_vert_without_att", request)
+    print(en_sentence_json)
     st.subheader('~ English sentence')
-    output = st.text_input('', value=en_sentence, help='English output sentence from seq2seq model.')
+    # output = st.text_input('', value=en_sentence, help='English output sentence from seq2seq model.')

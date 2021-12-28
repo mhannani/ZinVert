@@ -115,11 +115,13 @@ class ZinVertHandler(BaseHandler):
         for token in doc:
             tokens.append(token.text)
 
+        tokens.reverse()
+
         return tokens
 
     def inference(self, data):
         """
-
+            Doing inference method
         :param data:
         :return:
         """
@@ -164,7 +166,7 @@ class ZinVertHandler(BaseHandler):
 
         json_result = []
         en_sentence = " ".join(data)
-        json_result.append({'caption': en_sentence})
+        json_result.append({'en_sentence': en_sentence})
         return json_result
 
     def handle(self, data, context):
