@@ -83,6 +83,7 @@ class ZinVertHandler(BaseHandler):
         :param request:
         :return:
         """
+        print('request: ', request)
         request = request[0]
         request_body = request.get("body")
         dutch_sentence = request_body.get("dutch_sentence")
