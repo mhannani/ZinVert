@@ -11,22 +11,32 @@ from src.data import Vocabulary
 from src.utils import save_model, load_checkpoints
 
 
-def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_training_checkpoints=None):
+def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, with_att=False, continue_training_checkpoints=None):
     """
     Train the seq2seq network for neural translation task.
 
-    :param train_iter: Train set iterator
-    :param valid_iter: Test set iterator
-    :param src_vocab: Source language vocabulary(Dutch).
-    :param tgt_vocab: Target language vocabulary(English).
-    :param epochs: number of epochs
+    :param train_iter:
+        Train set iterator
+    :param valid_iter:
+        Test set iterator
+    :param src_vocab:
+        Source language vocabulary(Dutch).
+    :param tgt_vocab:
+        Target language vocabulary(English).
+    :param epochs:
+        number of epochs
+    :param with_att: Boolean
+        Weather to train the model with attention mechanism or train only the basic seq2seq architecture.
     :param continue_training_checkpoints: str
         Path to the checkpoint file to resume training from it
     :return: Trained model.
     """
 
     # create the model: model, optimizer, criterion
-    seq2seq, optimizer, criterion = create_seq2seq(src_vocab, tgt_vocab)
+    if with_att:
+        seq2seq, optimizer, criterion = create_seq2seq_att(src_vocab, tgt_vocab)
+    else:
+        seq2seq, optimizer, criterion = create_seq2seq(src_vocab, tgt_vocab)
 
     # starting epoch, will be 1 when training from scratch
     from_epoch = 1
@@ -136,16 +146,16 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, continue_
         current_time_elapsed = end_time - start_time
         time_elapsed += current_time_elapsed
 
-
         # Save the checkpoint
         loss = round(sum(train_loss) / len(train_loss))
-        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, loss, time_elapsed)
+        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, loss, time_elapsed, is_jit=True)
 
     print(colored('The training process of the model took: ', 'green'), colored(f'{timedelta(seconds=time_elapsed)}', 'red'))
 
 
 if __name__ == "__main__":
     print('Training...')
+    checkpoint = 'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_23__AT__2021_12_28__14_36_03__TRAIN_LOSS__2.pt'
 
     # Getting train DataLoader
     train_iterator = get_data(root='data/.data', batch_size=BATCH_SIZE, split='train')
@@ -158,7 +168,7 @@ if __name__ == "__main__":
     vocab = Vocabulary()
 
     # Save vocabularies
-    vocab()
+    # vocab()
 
     # Build vocabularies
     vocabularies = vocab.build_vocab()
@@ -168,5 +178,4 @@ if __name__ == "__main__":
     tgt_vocabulary = vocabularies['en']
 
     # Train network
-    checkpoint = 'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_18__AT__2021_12_27__11_15_50__TRAIN_LOSS__3.pt'
-    # train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, continue_training_checkpoints=checkpoint)
+    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary)

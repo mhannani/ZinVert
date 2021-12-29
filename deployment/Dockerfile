@@ -1,14 +1,13 @@
-FROM pytorch/torchserve:latest-cpu
-
+FROM pytorch/torchserve:latest
 # install dependencies
 #RUN pip3 install transformers
 
 # copy model artifacts, custom handler and other dependencies
 COPY zin_vert_handler.py /home/model-server/
-COPY ./itos_de.json.json /home/model-server/
-COPY ./itos_en.json.json.json /home/model-server/
-COPY ./stoi_de.json.json.json /home/model-server/
-COPY ./stoi_en.json.json.json /home/model-server/
+COPY ./itos_de.json /home/model-server/
+COPY ./itos_en.json /home/model-server/
+COPY ./stoi_de.json /home/model-server/
+COPY ./stoi_en.json /home/model-server/
 COPY constants.pkl /home/model-server/
 COPY JIT/model.pt /home/model-server/
 
@@ -28,7 +27,7 @@ RUN torch-model-archiver -f \
   --model-name=zin_vert_without_att \
   --version=1.0 \
   --serialized-file=/home/model-server/model.pt \
-  --handler=/home/model-server/custom_text_handler.py \
+  --handler=/home/model-server/zin_vert_handler.py \
   --extra-files "./constants.pkl,./itos_de.json,./itos_en.json,./stoi_de.json,./stoi_en.json" \
   --export-path=/home/model-server/model-store
 

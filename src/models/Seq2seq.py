@@ -35,9 +35,6 @@ class Seq2Seq(nn.Module):
         hidden, cell = self.encoder(src)
 
         # decode it from the encoder's hidden and cell state.
-        # print('***********************************************************************')
-        # print(tgt)
-        # print('***********************************************************************')
         outputs = self.decoder(tgt, hidden, cell, teacher_forcing_ratio)
 
         return outputs

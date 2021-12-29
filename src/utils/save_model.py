@@ -33,11 +33,11 @@ def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, ti
     }
 
     # Save the checkpoint
-    filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
-    jit_filename = f'checkpoints/JIT/JIT__CHECKPOINT_WITHOUT_ATT__EN__TO__DE__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
+    filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
+    jit_filename = f'checkpoints/JIT/JIT__CHECKPOINT_WITHOUT_ATT__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
 
     # save checkpoint
-    # torch.save(checkpoint, filename)
+    torch.save(checkpoint, filename)
 
     # if the JIT model required to be saved as well
     if is_jit:
@@ -46,11 +46,7 @@ def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, ti
         en_sentence = 'A little girl climbing into a wooden playhouse.'
 
         # Trace the model
-        print('preprocess(de_sentence, src_vocabulary)', preprocess(de_sentence, src_vocabulary))
-        traced = torch.jit.trace(model, (preprocess(de_sentence, src_vocabulary)[0], preprocess(en_sentence, tgt_vocabulary)[0]))
+        traced = torch.jit.trace(model, (preprocess(de_sentence, src_vocabulary)[0], preprocess(en_sentence, tgt_vocabulary)[0]), check_trace=False)
 
         # save traced model
         traced.save(jit_filename)
-
-
-

@@ -44,7 +44,6 @@ def preprocess(sentence, src_vocabulary):
 
     sentence_indices = [src_vocabulary.get_stoi().get(token, 0) for token in tokens]
 
-    print('sentence_indices: ', sentence_indices)
     sentence_tensor = LongTensor(sentence_indices).unsqueeze(1)
 
     return sentence_tensor, tokens

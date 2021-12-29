@@ -22,7 +22,7 @@ class CollateFn:
         :return: source, and target as batches.
         """
 
-        # split the batch
+        # Split the batch
         src_batch, tgt_batch = [], []
 
         for src_sample, tgt_sample in batch:

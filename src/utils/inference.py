@@ -26,7 +26,7 @@ def inference(sentence):
     sentence_tensor, tokens = preprocess(sentence, src_vocabulary)
 
     # Forward pass for the encoder
-    print(sentence_tensor)
+
     hidden, cell = seq_2_seq.encoder(sentence_tensor)
 
     # get the <sos> representation in vocabulary {As List} to be as the the first cell input

@@ -1,4 +1,5 @@
 import torch
+from typing import List
 from torchtext.data.utils import get_tokenizer
 from torchtext.datasets import Multi30k
 from torchtext.vocab import build_vocab_from_iterator
@@ -64,6 +65,17 @@ class Vocabulary:
         return vocabulary
 
     @staticmethod
+    def reverse_token_idx(tokens_idx: List):
+        """
+        Reverse a list of tokens indices
+        :param tokens_idx: List
+        :return: List
+        """
+
+        tokens_idx.reverse()
+        return tokens_idx
+
+    @staticmethod
     def tensor_transform(tokens_idx):
         """
         Builds the representation of numericalized sentence as Tensor.
@@ -104,7 +116,9 @@ class Vocabulary:
                 Input as Tensor
             """
             for transform in transforms:
+                # print('transform: ', transform)
                 sentence = transform(sentence)
+                # print('sentence: ', sentence)
             return sentence
 
         return shot
@@ -128,12 +142,18 @@ class Vocabulary:
 
         sentence_transform = {}
 
-        for lang in [SRC_LANGUAGE, TGT_LANGUAGE]:
-            sentence_transform[lang] = self.pipeline(
-                self.get_tokenizer()[lang],
-                self.vocabulary[lang],
-                self.tensor_transform
-            )
+        sentence_transform['de'] = self.pipeline(
+            self.get_tokenizer()['de'],
+            self.vocabulary['de'],
+            self.reverse_token_idx,
+            self.tensor_transform
+        )
+
+        sentence_transform['en'] = self.pipeline(
+            self.get_tokenizer()['en'],
+            self.vocabulary['en'],
+            self.tensor_transform
+        )
 
         return sentence_transform
 
