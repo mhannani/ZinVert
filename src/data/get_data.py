@@ -20,7 +20,7 @@ def get_data(root='../data/.data', batch_size=BATCH_SIZE, split='train'):
     train, valid, test = CustomMulti30k(root=root).extract_sets()
     sets = {'train': train, 'valid': valid, 'test': test}
     if split in ('train', 'valid', 'test'):
-        iterator = DataLoader(sets[split][:20], batch_size=batch_size, collate_fn=CollateFn())
+        iterator = DataLoader(sets[split], batch_size=batch_size, collate_fn=CollateFn())
 
     else:
         raise ValueError('Split name not found !')
