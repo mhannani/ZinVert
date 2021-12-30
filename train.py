@@ -6,7 +6,7 @@ from datetime import timedelta
 from torch.nn.utils import clip_grad_norm_
 from src.data.config import *
 from src.data import get_data
-from src.utils import create_seq2seq
+from src.utils import create_seq2seq, create_seq2seq_with_att
 from src.data import Vocabulary
 from src.utils import save_model, load_checkpoints
 
@@ -34,8 +34,10 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, with_att=
 
     # create the model: model, optimizer, criterion
     if with_att:
-        seq2seq, optimizer, criterion = create_seq2seq_att(src_vocab, tgt_vocab)
+        print('Training network with attention mechanism')
+        seq2seq, optimizer, criterion = create_seq2seq_with_att(src_vocab, tgt_vocab)
     else:
+        print('Training vanila seq-2-seq model')
         seq2seq, optimizer, criterion = create_seq2seq(src_vocab, tgt_vocab)
 
     # starting epoch, will be 1 when training from scratch
@@ -148,7 +150,7 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, with_att=
 
         # Save the checkpoint
         loss = round(sum(train_loss) / len(train_loss))
-        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, loss, time_elapsed, is_jit=True)
+        save_model(seq2seq, optimizer, src_vocab, tgt_vocab, epoch, loss, time_elapsed, with_att=with_att, is_jit=True)
 
     print(colored('The training process of the model took: ', 'green'), colored(f'{timedelta(seconds=time_elapsed)}', 'red'))
 
@@ -178,4 +180,4 @@ if __name__ == "__main__":
     tgt_vocabulary = vocabularies['en']
 
     # Train network
-    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary)
+    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, with_att=True)

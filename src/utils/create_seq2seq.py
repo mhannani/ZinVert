@@ -1,8 +1,9 @@
 import torch.nn as nn
 from torch.optim import Adam
 from src.models.Seq2seq import Seq2Seq
-from src.models.Decoder import Decoder, OneStepDecoder, OneStepDecoderWithAttention
+from src.models.Decoder import Decoder, OneStepDecoder, OneStepDecoderWithAttention, DecoderWithAttention
 from src.models.Encoder import Encoder, EncoderAttention
+from src.models.Attention import Attention
 from src.data.config import *
 
 
@@ -22,19 +23,19 @@ def create_seq2seq(src_vocab, tgt_vocab):
     tgt_vocab__len = len(tgt_vocab)
 
     # encoder model
-    encoder = EncoderAttention(src_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
+    encoder = Encoder(src_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
 
     # one step decoder model
-    one_step_decoder = OneStepDecoder(tgt_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
+    one_step_decoder = OneStepDecoder(tgt_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM)
 
     # decoder model
-    decoder = Decoder(one_step_decoder, device='cpu')
+    decoder = Decoder(one_step_decoder, device=DEVICE)
 
     # encoder -> decoder
     seq2seq = Seq2Seq(encoder, decoder)
 
     # move the model to device
-    seq2seq.to('cpu')
+    seq2seq.to(DEVICE)
 
     # Adam optimizer
     optimizer = Adam(seq2seq.parameters())
@@ -65,13 +66,16 @@ def create_seq2seq_with_att(src_vocab, tgt_vocab):
     tgt_vocab__len = len(tgt_vocab)
 
     # encoder model
-    encoder = Encoder(src_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
+    encoder = EncoderAttention(src_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
+
+    # attention model
+    attention = Attention(HIDDEN_DIM, HIDDEN_DIM)
 
     # one step decoder model
-    one_step_decoder = OneStepDecoderWithAttention(tgt_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
+    one_step_decoder = OneStepDecoderWithAttention(tgt_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, HIDDEN_DIM, attention)
 
     # decoder model
-    decoder = Decoder(one_step_decoder, device='cpu')
+    decoder = DecoderWithAttention(one_step_decoder, device='cpu')
 
     # encoder -> decoder
     seq2seq = Seq2Seq(encoder, decoder)

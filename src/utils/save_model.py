@@ -3,7 +3,7 @@ from src.utils import preprocess
 from time import gmtime, strftime
 
 
-def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, time_elapsed, is_jit=False):
+def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, time_elapsed, with_att=False, is_jit=False):
     """
     Save trained model, along with source and target languages vocabularies.
 
@@ -18,6 +18,8 @@ def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, ti
         Whether to save the JIT version of the model
     :param time_elapsed: int
         Number of seconds that the model took to train until that point
+    :param with_att: Boolean
+        Save the version of model with attention mechanism
     :return: None
     """
 
@@ -32,8 +34,10 @@ def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, ti
         'optimizer_state_dict': optimizer.state_dict()
     }
 
+    label = 'WITH_ATT' if with_att else 'WITHOUT_ATT'
+    substitute_path = 'ATTENTION_CHECKPOINTS/' if with_att else ''
     # Save the checkpoint
-    filename = f'checkpoints/CHECKPOINT_WITHOUT_ATT__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
+    filename = f'checkpoints/{substitute_path}CHECKPOINT_{label}__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
     jit_filename = f'checkpoints/JIT/JIT__CHECKPOINT_WITHOUT_ATT__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
 
     # save checkpoint

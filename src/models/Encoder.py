@@ -45,7 +45,6 @@ class Encoder(nn.Module):
 
         # Apply dropout to the embeddings
         # print('batch: ', batch)
-
         embed = self.dropout(self.embedding(batch))
 
         # Get the output from the LSTM (hidden state and cell state).
