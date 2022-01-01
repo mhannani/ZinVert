@@ -8,8 +8,7 @@ COPY ./itos_de.json /home/model-server/
 COPY ./itos_en.json /home/model-server/
 COPY ./stoi_de.json /home/model-server/
 COPY ./stoi_en.json /home/model-server/
-COPY constants.pkl /home/model-server/
-COPY JIT/model.pt /home/model-server/
+COPY JIT/WITHOUT_ATTENTION/model.pt /home/model-server/
 
 # create torchserve configuration file
 USER root
@@ -28,7 +27,7 @@ RUN torch-model-archiver -f \
   --version=1.0 \
   --serialized-file=/home/model-server/model.pt \
   --handler=/home/model-server/zin_vert_handler.py \
-  --extra-files "./constants.pkl,./itos_de.json,./itos_en.json,./stoi_de.json,./stoi_en.json" \
+  --extra-files "./itos_de.json,./itos_en.json,./stoi_de.json,./stoi_en.json" \
   --export-path=/home/model-server/model-store
 
 # run Torchserve HTTP serve to respond to prediction requests

@@ -35,10 +35,10 @@ def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, ti
     }
 
     label = 'WITH_ATT' if with_att else 'WITHOUT_ATT'
-    substitute_path = 'ATTENTION_CHECKPOINTS/' if with_att else ''
+    substitute_path = 'ATTENTION_CHECKPOINTS/' if with_att else 'WITHOUT_ATTENTION/'
     # Save the checkpoint
     filename = f'checkpoints/{substitute_path}CHECKPOINT_{label}__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
-    jit_filename = f'checkpoints/JIT/JIT__CHECKPOINT_WITHOUT_ATT__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
+    jit_filename = f'checkpoints/{substitute_path}JIT/JIT__{label}_ATT__DE__TO__EN__EPOCH_{epoch}__AT__{strftime("%Y_%m_%d__%H_%M_%S", gmtime())}__TRAIN_LOSS__{loss}.pt'
 
     # save checkpoint
     torch.save(checkpoint, filename)
@@ -46,11 +46,14 @@ def save_model(model, optimizer, src_vocabulary, tgt_vocabulary, epoch, loss, ti
     # if the JIT model required to be saved as well
     if is_jit:
         # save jit mode model
+        model.eval()
         de_sentence = 'Ein kleines Mädchen klettert in ein Spielhaus aus Holz.'
         en_sentence = 'A little girl climbing into a wooden playhouse.'
 
         # Trace the model
-        traced = torch.jit.trace(model, (preprocess(de_sentence, src_vocabulary)[0], preprocess(en_sentence, tgt_vocabulary)[0]), check_trace=False)
+        # traced = torch.jit.trace(model, (preprocess(de_sentence, src_vocabulary)[0], preprocess(en_sentence, tgt_vocabulary)[0]), check_trace=False)
+
+        traced = torch.jit.trace(model, (preprocess(de_sentence, src_vocabulary.vocab)[0], preprocess(en_sentence, tgt_vocabulary.vocab)[0]), check_trace=False)
 
         # save traced model
         traced.save(jit_filename)

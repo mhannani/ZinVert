@@ -6,6 +6,7 @@ from torch.nn.functional import softmax
 class Attention(nn.Module):
     """
     The attention model
+    src: https://pytorch.org/tutorials/beginner/deploy_seq2seq_hybrid_frontend_tutorial.html
     """
 
     def __init__(self, encoder_hidden_dim, decoder_hidden_dim):

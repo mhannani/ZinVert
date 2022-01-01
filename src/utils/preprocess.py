@@ -2,7 +2,7 @@ import spacy
 from torch import LongTensor
 
 
-def _get_tokens(sentence):
+def _get_tokens(sentence, with_att=False):
     """
     Get tokens of an  input sentence.
     :param sentence: str
@@ -21,14 +21,18 @@ def _get_tokens(sentence):
     for token in doc:
         tokens.append(token.text)
 
-    tokens.reverse()
+    if not with_att:
+        tokens.reverse()
 
     return tokens
 
 
-def preprocess(sentence, src_vocabulary):
+def preprocess(sentence, src_vocabulary, with_att=False):
     """
     Preprocess the input sentence.
+    :param with_att: boolean
+        Preprocess the sentence in attention model
+        Basically, this allow not reversing the tokens of the input langauge.
     :param sentence: str
         A sentence
     :param src_vocabulary: vocab
@@ -37,12 +41,13 @@ def preprocess(sentence, src_vocabulary):
     """
 
     # tokenize the sentence
-    tokens = _get_tokens(sentence)
+    tokens = _get_tokens(sentence, with_att)
 
     # append <sos> and <eos> tokens
     tokens = ['<sos>'] + [token.lower() for token in tokens] + ['<eos>']
 
-    sentence_indices = [src_vocabulary.get_stoi().get(token, 0) for token in tokens]
+    sentence_indices = [src_vocabulary.stoi[token] for token in tokens]
+    # sentence_indices = [src_vocabulary.get_stoi().get(token, 0) for token in tokens]
 
     sentence_tensor = LongTensor(sentence_indices).unsqueeze(1)
 

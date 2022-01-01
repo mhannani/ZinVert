@@ -9,7 +9,8 @@ from src.data import get_data
 from src.utils import create_seq2seq, create_seq2seq_with_att
 from src.data import Vocabulary
 from src.utils import save_model, load_checkpoints
-
+import warnings
+warnings.filterwarnings("ignore")
 
 def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, with_att=False, continue_training_checkpoints=None):
     """
@@ -75,6 +76,7 @@ def train(train_iter, valid_iter, src_vocab, tgt_vocab, epochs=EPOCHS, with_att=
         for src, tgt in train_iter:
 
             # see: https://stackoverflow.com/questions/48001598/why-do-we-need-to-call-zero-grad-in-pytorch
+
             # set gradients to zero
             optimizer.zero_grad()
 
@@ -180,4 +182,4 @@ if __name__ == "__main__":
     tgt_vocabulary = vocabularies['en']
 
     # Train network
-    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, with_att=True)
+    train(train_iterator, valid_iterator, src_vocabulary, tgt_vocabulary, with_att=False)

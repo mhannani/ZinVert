@@ -55,6 +55,7 @@ class Vocabulary:
         :return: List of Vocabs
         """
         vocabulary = {}
+        # itos stoi
         for lang in [SRC_LANGUAGE, TGT_LANGUAGE]:
             data_iterator = Multi30k(root='../data/.data', split='train', language_pair=(SRC_LANGUAGE, TGT_LANGUAGE))
             vocabulary[lang] = build_vocab_from_iterator(self._get_tokens(data_iterator, lang),
@@ -132,7 +133,7 @@ class Vocabulary:
         sentence = self.vocabulary[lang].lookup_tokens(tensor.tolist())
         return sentence
 
-    def preprocess(self):
+    def preprocess(self, inference=False):
         """
         Tokenize, numericalize and turn into tensor a sentence.
 
@@ -142,12 +143,19 @@ class Vocabulary:
 
         sentence_transform = {}
 
-        sentence_transform['de'] = self.pipeline(
-            self.get_tokenizer()['de'],
-            self.vocabulary['de'],
-            self.reverse_token_idx,
-            self.tensor_transform
-        )
+        if inference:
+            sentence_transform['de'] = self.pipeline(
+                self.get_tokenizer()['de'],
+                self.vocabulary['de'],
+                self.tensor_transform
+            )
+        else:
+            sentence_transform['de'] = self.pipeline(
+                self.get_tokenizer()['de'],
+                self.vocabulary['de'],
+                self.reverse_token_idx,
+                self.tensor_transform
+            )
 
         sentence_transform['en'] = self.pipeline(
             self.get_tokenizer()['en'],

@@ -4,5 +4,5 @@ from .inference import inference
 from .load_model import load_checkpoints
 from .preprocess import preprocess
 from .save_model import save_model
-from .seq2seq_inference import seq2seq_inference
+from .seq2seq_inference import seq2seq_inference, seq2seq_inference_with_attention
 

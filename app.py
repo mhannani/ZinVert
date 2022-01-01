@@ -3,7 +3,7 @@ import json
 import streamlit as st
 from src.app import SessionState
 from src.app.load_assets import *
-from src.utils import inference
+from src.utils.inference import inference_att
 from src.app import https
 
 GitHub = "https://github.com/mhannani/ZinVert"
@@ -49,6 +49,17 @@ if translate_button:
     # en_sentence = inference(de_sentence)
     data = {"dutch_sentence": de_sentence}
     json_data = json.dumps(data)
-    en_sentence_json = https.fetch(session, f"http://127.0.0.1:8080/predictions/zin_vert_without_att", json_data)
-    st.subheader('~ English sentence')
-    output = st.text_input('', value=en_sentence_json['en_sentence'], help='English output sentence from seq2seq model.')
+
+    if choose_model == "SEQ__2__SEQ__WITHOUT__ATT":
+        en_sentence_json = https.fetch(session, f"http://127.0.0.1:8080/predictions/zin_vert_without_att", json_data)
+        st.subheader('~ English sentence')
+        output = st.text_input('', value=en_sentence_json['en_sentence'], help='English output sentence from seq2seq model.')
+
+    else:
+        # en_sentence = inference_att(de_sentence)
+        # st.subheader('~ English sentence')
+        # output = st.text_input('', value=en_sentence, help='English output sentence from seq2seq model.')
+
+        en_sentence_json = https.fetch(session, f"http://127.0.0.1:8080/predictions/zin_vert_with_att", json_data)
+        st.subheader('~ English sentence')
+        output = st.text_input('', value=en_sentence_json['en_sentence'], help='English output sentence from seq2seq model.')

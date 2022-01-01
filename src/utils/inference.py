@@ -3,7 +3,7 @@ from torch import LongTensor, no_grad
 from src.utils.load_model import load_checkpoints
 from src.utils.create_seq2seq import create_seq2seq
 from src.utils.preprocess import preprocess
-from src.utils.seq2seq_inference import seq2seq_inference
+from src.utils.seq2seq_inference import seq2seq_inference_with_attention, seq2seq_inference
 from torch import jit
 
 

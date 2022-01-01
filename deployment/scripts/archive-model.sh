@@ -1,1 +1,0 @@
-torch-model-archiver --model-name zin_vert_without_att --version 1.0 --serialized-fil ./JIT/model.pt --extra-files ./constants.pkl,./itos_de.json,./itos_en.json,./stoi_de.json,./stoi_en.json --handler zin_vert_handler.py --export-path model-store -f

@@ -62,8 +62,8 @@ def create_seq2seq_with_att(src_vocab, tgt_vocab):
     """
 
     # vocabularies size
-    src_vocab__len = len(src_vocab)
-    tgt_vocab__len = len(tgt_vocab)
+    src_vocab__len = len(src_vocab.vocab)
+    tgt_vocab__len = len(tgt_vocab.vocab)
 
     # encoder model
     encoder = EncoderAttention(src_vocab__len, EMBEDDING_SIZE, HIDDEN_DIM, N_LAYERS, DROPOUT)
