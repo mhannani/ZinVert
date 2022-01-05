@@ -3,7 +3,7 @@ from torch import LongTensor, no_grad
 from src.utils.load_model import load_checkpoints
 from src.utils.create_seq2seq import create_seq2seq
 from src.utils.preprocess import preprocess
-from src.utils.seq2seq_inference import seq2seq_inference_with_attention, seq2seq_inference
+from src.utils.seq2seq_inference import seq2seq_inference
 from torch import jit
 
 
@@ -26,11 +26,10 @@ def inference(sentence):
     sentence_tensor, tokens = preprocess(sentence, src_vocabulary)
 
     # Forward pass for the encoder
-
     hidden, cell = seq_2_seq.encoder(sentence_tensor)
 
     # get the <sos> representation in vocabulary {As List} to be as the the first cell input
-    sos_token_index = [tgt_vocabulary.get_stoi()['<sos>']]
+    sos_token_index = [tgt_vocabulary.stoi['<sos>']]
 
     # convert it to tensor
     sos_or_next_token_tensor = LongTensor(sos_token_index)
@@ -62,7 +61,7 @@ def inference(sentence):
             # and it's a probability distribution of each token in target vocabulary
             sos_or_next_token_tensor = output.argmax(1)
 
-            predicted_token = tgt_vocabulary.get_itos()[sos_or_next_token_tensor.item()]
+            predicted_token = tgt_vocabulary.itos[sos_or_next_token_tensor.item()]
 
             # if we got <eos> then stop the loop
             if predicted_token == '<eos>':
@@ -72,6 +71,6 @@ def inference(sentence):
                 tgt_indices.append(sos_or_next_token_tensor.item())
                 trg_sentence.append(predicted_token)
 
-        predicted_words = [tgt_vocabulary.get_itos()[i] for i in tgt_indices]
+        predicted_words = [tgt_vocabulary.itos[i] for i in tgt_indices]
 
         return " ".join(predicted_words)

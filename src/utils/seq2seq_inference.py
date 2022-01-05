@@ -58,7 +58,11 @@ def seq2seq_inference_with_attention(checkpoint_filename):
 
     # Instantiate the models
     encoder = EncoderAttention(src_vocabulary_len, EMBEDDING_SIZE, HIDDEN_DIM)
+
+    # attention layer
     attention = Attention(HIDDEN_DIM, HIDDEN_DIM)
+
+    # one step decoder
     one_step_decoder = OneStepDecoderWithAttention(tgt_vocabulary_len, EMBEDDING_SIZE, HIDDEN_DIM, HIDDEN_DIM, attention)
     decoder = DecoderWithAttention(one_step_decoder, 'cpu')
 
