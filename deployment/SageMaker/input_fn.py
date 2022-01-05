@@ -1,3 +1,15 @@
+def preprocess_sentence(sentence):
+    """
+    Preprocess a sentence.
+    :param sentence: str
+        A source sentence
+    :return: str
+        preprocessed sentence
+    """
+
+    pass
+
+
 def input_fn(request_body, request_content_type):
     """
     An input_fn that loads the pickled tensor by the inference server of SageMaker.
@@ -9,6 +21,13 @@ def input_fn(request_body, request_content_type):
         The request body
     :param request_content_type: type
         The request body type.
-    :return:
+    :return: torch.Tensor
     """
+
+    if request_content_type == 'application/json':
+        return None
+
+    return 'WHAT HAPPEN TO YOU !'
+
+
 
